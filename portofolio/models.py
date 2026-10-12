@@ -55,3 +55,12 @@ class HistoricalPrice(models.Model):
 
     def __str__(self):
         return f"{self.asset.ticker} - {self.date}: {self.close_price}"
+    
+class PortfolioPosition(models.Model):
+    portfolio = models.ForeignKey(UserPortfolio, related_name='positions', on_delete=models.CASCADE)
+    asset = models.ForeignKey(Asset, on_delete=models.CASCADE)
+    quantity = models.DecimalField(max_digits=15, decimal_places=6)
+    purchase_price = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.quantity} x {self.asset.ticker} ({self.portfolio.name})"
