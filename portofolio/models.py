@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone 
 
 class Asset(models.Model):
     ASSET_TYPES = [
@@ -36,10 +37,14 @@ class Transaction(models.Model):
     portfolio = models.ForeignKey(UserPortfolio, on_delete=models.CASCADE)
     asset = models.ForeignKey(Asset, on_delete=models.SET_NULL, null=True, blank=True)
     transaction_type = models.CharField(max_length=15, choices=TRANSACTION_TYPES)
-    date = models.DateTimeField()
+    date = models.DateTimeField(default=timezone.now)
     quantity = models.DecimalField(max_digits=18, decimal_places=8, default=0) 
     price_per_share = models.DecimalField(max_digits=18, decimal_places=4, default=0)
     fees = models.DecimalField(max_digits=10, decimal_places=4, default=0)
+    
+    remaining_quantity = models.DecimalField(max_digits=18, decimal_places=8, default=0)
+    realized_profit = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True)
+    estimated_tax = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True)
 
     def __str__(self):
         return f"{self.transaction_type} {self.quantity} {self.asset} at {self.date.date()}"
